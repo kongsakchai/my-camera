@@ -1,0 +1,124 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    font-weight: 400;
+
+    color-scheme: light dark;
+    color: #292929;
+    background-color: #ffffff;
+
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    margin: 0;
+    padding: 2rem;
+    place-content: center;
+
+    width: 100vw;
+    height: 100vh;
+
+    overflow: hidden;
+}
+
+@layer base {
+    select {
+        background-color: #ffffff;
+        outline: none;
+        border-radius: 4px;
+        border: 1px #292929 solid;
+        padding: 4px 16px;
+    }
+
+    h1 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        line-height: 1.5;
+    }
+
+    h2 {
+        font-size: 1.125rem;
+        font-weight: 600;
+        line-height: 1;
+    }
+}
+
+@layer components {
+    .popup {
+        position: absolute;
+        transform: translate(-50%, -50%);
+        top: 50%;
+        left: 50%;
+
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+
+        min-width: 100px;
+        min-height: 100px;
+
+        border-radius: 16px;
+        padding: 1rem;
+        background-color: #ffffff;
+        border: 1px #eeeeee solid;
+    }
+
+    .popup.close {
+        display: none;
+    }
+
+    .popup.open {
+        display: flex;
+    }
+
+    .slider {
+        --volume: 0%;
+
+        -webkit-appearance: none; /* Override default CSS styles */
+        appearance: none;
+
+        position: absolute;
+        width: 150px;
+        height: 32px;
+        border-radius: 99px;
+        overflow: hidden;
+
+        transform: translate(-50%, -50%) rotate(270deg);
+        top: 50%;
+        left: 50%;
+
+        background-color: #0000004c;
+    }
+
+    .slider::after {
+        display: block;
+        content: "";
+
+        position: absolute;
+        width: 150px;
+        height: 32px;
+
+        transform-origin: left;
+        transform: translate(0%, -50%) scale(var(--volume), 100%);
+        top: 50%;
+        left: 0%;
+
+        background-color: #ffffff;
+    }
+
+    .slider::-webkit-slider-thumb {
+        -webkit-appearance: none; /* Override default CSS styles */
+        appearance: none;
+
+        height: 100%;
+        width: 1px;
+    }
+}
