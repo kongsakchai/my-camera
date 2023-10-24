@@ -29,6 +29,25 @@ const createAudioTrack = (id: string): MediaTrackConstraints => ({
     deviceId: id,
 });
 
+const getPermission = async () => {
+    const microphone = navigator.permissions.query({
+        name: "microphone" as PermissionName,
+    });
+    const camera = navigator.permissions.query({
+        name: "camera" as PermissionName,
+    });
+
+    const result = await Promise.all([microphone, camera]);
+
+    if (result[0].state === "prompt" && result[1].state === "prompt") {
+        const devices = await navigator.mediaDevices.getUserMedia({
+            video: true,
+            audio: true,
+        });
+        devices.getTracks().forEach((track) => track.stop());
+    }
+};
+
 document.addEventListener("DOMContentLoaded", () => {
     const screen = load("screen");
     const videoElement = load<HTMLVideoElement>("video");
@@ -44,8 +63,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const fullscreenBtn = load<HTMLInputElement>("fullscreen-btn");
 
     let fullscreen = false;
+    let stream: MediaStream | null = null;
 
     const getDevices = async () => {
+        await getPermission();
+
         const devices = await navigator.mediaDevices.enumerateDevices();
 
         devices.forEach((device) => {
@@ -53,19 +75,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 addOption(videoSelect, device.deviceId, device.label);
             else if (device.kind === "audioinput")
                 addOption(audioSelect, device.deviceId, device.label);
-
-            console.log(device.deviceId, device.label);
         });
-
-        volumeInput.value = localStorage.getItem("volume") || "100";
-        volumeInput.style.setProperty("--volume", `${volumeInput.value}%`);
     };
-
-    getDevices();
 
     const update = async () => {
         const video = videoSelect.value;
         const audio = audioSelect.value;
+
+        stream?.getTracks().forEach((t) => t.stop());
 
         if (!video && !audio) {
             videoElement.srcObject = null;
@@ -73,7 +90,7 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        const stream = await navigator.mediaDevices.getUserMedia({
+        stream = await navigator.mediaDevices.getUserMedia({
             video: video ? createVideoTrack(videoSelect.value) : false,
             audio: audio ? createAudioTrack(audioSelect.value) : false,
         });
@@ -83,6 +100,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (video) menu.classList.add("opacity-0");
     };
+
+    volumeInput.value = localStorage.getItem("volume") || "100";
+    volumeInput.style.setProperty("--volume", `${volumeInput.value}%`);
+    getDevices();
 
     on(videoSelect, "change", () => update());
 
@@ -94,8 +115,8 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     on(openSettingBtn, "click", () => {
-        settingPopup.classList.add("open");
         settingPopup.classList.remove("close");
+        settingPopup.classList.add("open");
     });
 
     on(volumeInput, "input", () => {
