@@ -21,8 +21,6 @@ const addOption = (select: HTMLSelectElement, value: string, label: string) => {
 const createVideoTrack = (id: string): MediaTrackConstraints => ({
     deviceId: id,
     aspectRatio: 16 / 9,
-    width: 2560,
-    height: 1440,
 });
 
 const createAudioTrack = (id: string): MediaTrackConstraints => ({

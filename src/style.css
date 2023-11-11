@@ -69,6 +69,8 @@ body {
         padding: 1rem;
         background-color: #ffffff;
         border: 1px #eeeeee solid;
+
+        z-index: 30;
     }
 
     .popup.close {
