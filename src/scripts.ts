@@ -27,6 +27,9 @@ const createVideoTrack = (id: string): MediaTrackConstraints => ({
 
 const createAudioTrack = (id: string): MediaTrackConstraints => ({
     deviceId: id,
+    autoGainControl: false,
+    echoCancellation: false,
+    noiseSuppression: false
 });
 
 const getPermission = async () => {
